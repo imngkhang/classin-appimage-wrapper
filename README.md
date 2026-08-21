@@ -1,5 +1,13 @@
 # ClassIn unofficial AppImage wrapper
 
+## 📄 License & Disclaimer
+
+This project is unofficially repackaged as an AppImage for demonstration and testing purposes to promote this packaging format to EEO. Consider this package as "experimental". I also invite you to request them to release an official AppImage, and if they agree, you can show this repository as a proof of concept.
+
+This wrapper is licensed under the GPL-3.0-only license.
+
+ClassIn is a registered trademark of Empower Education Online Ltd. (EEO). This project is community-maintained and is not affiliated with, supported, or endorsed by EEO. 
+
 ## Description
 
 This is an unofficial AppImage wrapper for ClassIn. 
@@ -80,10 +88,3 @@ Want to become a **co-maintainer**? If you use ClassIn on Linux regularly, you c
 
 Feel free to open an issue or submit a PR anytime!
 
-## 📄 License & Disclaimer
-
-This project is unofficially repackaged as an AppImage for demonstration and testing purposes to promote this packaging format to EEO. Consider this package as "experimental". I also invite you to request them to release an official AppImage, and if they agree, you can show this repository as a proof of concept.
-
-This wrapper is licensed under the GPL-3.0-only license.
-
-ClassIn is a registered trademark of Empower Education Online Ltd. (EEO). This project is community-maintained and is not affiliated with, supported, or endorsed by EEO. 
