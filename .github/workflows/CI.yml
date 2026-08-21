@@ -15,6 +15,8 @@ jobs:
     outputs:
       should_release: ${{ steps.sync_check.outputs.should_release }}
       app_version: ${{ steps.sync_check.outputs.app_version }}
+      raw_version_x64: ${{ steps.sync_check.outputs.raw_version_x64 }}
+      raw_version_aa64: ${{ steps.sync_check.outputs.raw_version_aa64 }}
     # Checkout the repo
     steps:
       - uses: actions/checkout@v4
@@ -55,12 +57,12 @@ jobs:
           fi
         # Here we will build the AppImage
       - name: Build
-        if: steps.sync_check.outputs.should_release == 'true' 
+        if: steps.sync_check.outputs.should_release == 'true' || github.event_name == 'workflow_dispatch'
         run: |
           make build-all
         # Upload the built AppImage as an artifact
       - name: Upload artifact
-        if: steps.sync_check.outputs.should_release == 'true' 
+        if: steps.sync_check.outputs.should_release == 'true' || github.event_name == 'workflow_dispatch'
         uses: actions/upload-artifact@v4
         with:
           name: AppImage
@@ -68,7 +70,7 @@ jobs:
 
   release:
     needs: [check-and-build]
-    if: needs.check-and-build.outputs.should_release == 'true' 
+    if: needs.check-and-build.outputs.should_release == 'true' || github.event_name == 'workflow_dispatch'
     permissions: write-all
     runs-on: ubuntu-latest
 
@@ -102,9 +104,9 @@ jobs:
             For aarch64:
             ```bash
             # Download the AppImage
-            wget https://github.com/classin-appimage-wrapper/releases/download/${{ needs.check-and-build.outputs.app_version }}/ClassIn-${{ needs.check-and-build.outputs.raw_version_aarch64 }}-aarch64.AppImage
+            wget https://github.com/classin-appimage-wrapper/releases/download/${{ needs.check-and-build.outputs.app_version }}/ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-aarch64.AppImage
             # Install with Gear Lever
-            flatpak run it.mijorus.gearlever --integrate ClassIn-${{ needs.check-and-build.outputs.raw_version_aarch64 }}-aarch64.AppImage
+            flatpak run it.mijorus.gearlever --integrate ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-aarch64.AppImage
             ```
 
             ## Issues & Support
@@ -115,7 +117,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # Create a continuous release and upload the AppImage
       - name: Update continuous release
-        uses: marvinpinto/action-automatic-releases@latest
+        uses: softprops/action-gh-release@v2
         with:
           title: Continuous build (Unofficial)
           automatic_release_tag: continuous
@@ -135,9 +137,9 @@ jobs:
             For aarch64:
             ```bash
             # Download the AppImage
-            wget https://github.com/classin-appimage-wrapper/releases/download/continuous/ClassIn-${{ needs.check-and-build.outputs.raw_version_aarch64 }}-aarch64.AppImage
+            wget https://github.com/classin-appimage-wrapper/releases/download/continuous/ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-aarch64.AppImage
             # Install with Gear Lever
-            flatpak run it.mijorus.gearlever --integrate ClassIn-${{ needs.check-and-build.outputs.raw_version_aarch64 }}-aarch64.AppImage
+            flatpak run it.mijorus.gearlever --integrate ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-aarch64.AppImage
             ```
 
             ## Issues & Support
