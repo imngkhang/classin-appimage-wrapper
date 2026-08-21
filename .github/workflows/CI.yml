@@ -1,0 +1,148 @@
+name: Release AppImages
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  # Run workflow every day at midnight and on manual trigger
+  schedule:
+    - cron: "0 0 * * *"  
+  workflow_dispatch: 
+
+jobs:
+  check-and-build:
+    runs-on: ubuntu-latest
+    outputs:
+      should_release: ${{ steps.sync_check.outputs.should_release }}
+      app_version: ${{ steps.sync_check.outputs.app_version }}
+    # Checkout the repo
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 
+          token: ${{ secrets.GITHUB_TOKEN }}
+      # Sync the version from EEO
+      - name: Sync and check for new version
+        id: sync_check
+        run: |
+          chmod a+x ./sync_from_eeo.sh 2>/dev/null || false
+          ./sync_from_eeo.sh
+          
+          # We will cut the version to majot.minor.patch only, as the build number is not relevant for the release
+          RAW_VER_x64=$(jq -r '.architectures.x86_64.version' manifest.json 2>/dev/null || echo "")
+          RAW_VER_aa64=$(jq -r '.architectures.aarch64.version' manifest.json 2>/dev/null || echo "")
+          
+          APP_VER=$(echo "$RAW_VER_x64" | cut -d. -f1-3)
+          echo "raw_version_x64=${RAW_VER_x64}" >> $GITHUB_OUTPUT
+          echo "raw_version_aa64=${RAW_VER_aa64}" >> $GITHUB_OUTPUT
+          echo "app_version=${APP_VER}" >> $GITHUB_OUTPUT
+          
+          # If the tag already exists, we don't need to build or release
+          if git rev-parse "$APP_VER" >/dev/null 2>&1; then
+            echo "Tag $APP_VER already exists."
+            echo "should_release=false" >> $GITHUB_OUTPUT
+          else
+            echo "New version detected ($APP_VER). Preparing to build."
+            echo "should_release=true" >> $GITHUB_OUTPUT
+
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            if [ -n "$(git status --porcelain)" ]; then
+              git add .
+              git commit -m "bot: Auto-update manifest to $APP_VER"
+              git push
+            fi
+          fi
+        # Here we will build the AppImage
+      - name: Build
+        if: steps.sync_check.outputs.should_release == 'true' 
+        run: |
+          make x86_64
+          make aarch64
+        # Upload the built AppImage as an artifact
+      - name: Upload artifact
+        if: steps.sync_check.outputs.should_release == 'true' 
+        uses: actions/upload-artifact@v4
+        with:
+          name: AppImage
+          path: 'dist'
+
+  release:
+    needs: [check-and-build]
+    if: needs.check-and-build.outputs.should_release == 'true' 
+    permissions: write-all
+    runs-on: ubuntu-latest
+
+    steps:
+      # Download the built AppImage artifact
+      - uses: actions/download-artifact@v4
+        with:
+          name: AppImage
+          path: dist
+      # Create a versioned release and upload the AppImage
+      - name: Create versioned release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "Version ${{ needs.check-and-build.outputs.app_version }} (Unofficial)"
+          tag_name: "${{ needs.check-and-build.outputs.app_version }}"
+          prerelease: false
+          draft: false
+          generate_release_notes: false
+          make_latest: true
+          body: |
+            It is recommended to use [Gear Lever](https://github.com/mijorus/gearlever) to manage and integrate the AppImage.
+            
+            For x86_64:
+            ```bash
+            # Download the AppImage
+            wget https://github.com/classin-appimage-wrapper/releases/download/${{ needs.check-and-build.outputs.app_version }}/ClassIn-${{ needs.check-and-build.outputs.raw_version_x64 }}-x86_64.AppImage
+            # Install with Gear Lever
+            flatpak run it.mijorus.gearlever --integrate ClassIn-${{ needs.check-and-build.outputs.raw_version_x64 }}-x86_64.AppImage
+            ```
+            
+            For aarch64:
+            ```bash
+            # Download the AppImage
+            wget https://github.com/classin-appimage-wrapper/releases/download/${{ needs.check-and-build.outputs.app_version }}/ClassIn-${{ needs.check-and-build.outputs.raw_version_aarch64 }}-aarch64.AppImage
+            # Install with Gear Lever
+            flatpak run it.mijorus.gearlever --integrate ClassIn-${{ needs.check-and-build.outputs.raw_version_aarch64 }}-aarch64.AppImage
+            ```
+
+            ## Issues & Support
+            Please report issues in the [GitHub Issues](https://github.com/imngkhang/classin-appimage-wrapper/issues).
+          files: |
+            dist/ClassIn*.AppImage*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Create a continuous release and upload the AppImage
+      - name: Update continuous release
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          title: Continuous build (Unofficial)
+          automatic_release_tag: continuous
+          prerelease: false
+          draft: false
+          body: |
+            It is recommended to use [Gear Lever](https://github.com/mijorus/gearlever) to manage and integrate the AppImage.
+            
+            For x86_64:
+            ```bash
+            # Download the AppImage
+            wget https://github.com/classin-appimage-wrapper/releases/download/continuous/ClassIn-${{ needs.check-and-build.outputs.raw_version_x64 }}-x86_64.AppImage
+            # Install with Gear Lever
+            flatpak run it.mijorus.gearlever --integrate ClassIn-${{ needs.check-and-build.outputs.raw_version_x64 }}-x86_64.AppImage
+            ```
+            
+            For aarch64:
+            ```bash
+            # Download the AppImage
+            wget https://github.com/classin-appimage-wrapper/releases/download/continuous/ClassIn-${{ needs.check-and-build.outputs.raw_version_aarch64 }}-aarch64.AppImage
+            # Install with Gear Lever
+            flatpak run it.mijorus.gearlever --integrate ClassIn-${{ needs.check-and-build.outputs.raw_version_aarch64 }}-aarch64.AppImage
+            ```
+
+            ## Issues & Support
+            Please report issues in the [GitHub Issues](https://github.com/imngkhang/classin-appimage-wrapper/issues).
+          files: |
+            dist/ClassIn*.AppImage*
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
