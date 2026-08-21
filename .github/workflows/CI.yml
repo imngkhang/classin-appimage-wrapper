@@ -57,8 +57,7 @@ jobs:
       - name: Build
         if: steps.sync_check.outputs.should_release == 'true' 
         run: |
-          make x86_64
-          make aarch64
+          make build-all
         # Upload the built AppImage as an artifact
       - name: Upload artifact
         if: steps.sync_check.outputs.should_release == 'true' 
