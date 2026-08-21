@@ -1,0 +1,17 @@
+{
+  "name": "ClassIn",
+  "architectures": {
+    "x86_64": {
+      "version": "@CLASSIN_VERSION_AMD64@",
+      "url": "@CLASSIN_URL_AMD64@",
+      "sha256": "@CLASSIN_SHA256_AMD64@",
+      "size": "@CLASSIN_SIZE_AMD64@"
+    },
+    "arm64": {
+      "version": "@CLASSIN_VERSION_ARM64@",
+      "url": "@CLASSIN_URL_ARM64@",
+      "sha256": "@CLASSIN_SHA256_ARM64@",
+      "size": "@CLASSIN_SIZE_ARM64@"
+    }
+  }
+}

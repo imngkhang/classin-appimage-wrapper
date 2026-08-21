@@ -1,0 +1,22 @@
+# AppImage builder working directories
+dist/
+*.AppDir/
+
+# AppImage generated binaries & tools
+appimagetool
+*.AppImage
+
+# Extra downloads & temporary files
+extra/
+*.deb
+
+# System & OS generated files
+.DS_Store
+Thumbs.db
+*~
+*.swp
+*.tmp
+
+# IDE / Editor files
+.vscode/
+.idea/
