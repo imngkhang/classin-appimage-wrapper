@@ -2,7 +2,7 @@
 
 ## 📄 License & Disclaimer
 
-This project is unofficially repackaged as an AppImage for demonstration and testing purposes to promote this packaging format to EEO. Consider this package as "experimental". I also invite you to request them to release an official AppImage, and if they agree, you can show this repository as a proof of concept.
+This project is for demonstration and testing purposes ONLY, to promote this packaging format to EEO. Consider this package as "experimental" or "testing". I also invite you to request them to release an official AppImage, and if they agree, you can show this repository as a proof of concept.
 
 This wrapper is licensed under the GPL-3.0-only license.
 
