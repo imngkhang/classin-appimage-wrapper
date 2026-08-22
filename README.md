@@ -107,7 +107,7 @@ Contributions are always welcome! You can help by:
 - Submitting PRs to update the wrapper.
 - Improving the autobuild (CI) code and other parts.
 
-Want to become a **co-maintainer**? If you use ClassIn on Linux regularly, you can join in and help maintain this package!
+Want to become a **co-maintainer**? If you use ClassIn on Linux regularly, you can join in and help maintain this package! See [this issue](https://github.com/imngkhang/classin-appimage-wrapper/issues/1) for more info.
 
 Feel free to open an issue or submit a PR anytime!
 
