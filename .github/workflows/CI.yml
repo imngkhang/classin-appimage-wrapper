@@ -30,7 +30,7 @@ jobs:
           chmod a+x ./sync_from_eeo.sh 2>/dev/null || false
           ./sync_from_eeo.sh
           
-          # We will cut the version to majot.minor.patch only, as the build number is not relevant for the release
+          # We will cut the version to major.minor.patch only, as the build number is not relevant for the release
           RAW_VER_x64=$(jq -r '.architectures.x86_64.version' manifest.json 2>/dev/null || echo "")
           RAW_VER_aa64=$(jq -r '.architectures.aarch64.version' manifest.json 2>/dev/null || echo "")
           
