@@ -110,7 +110,7 @@ jobs:
             ```
 
             ## Issues & Support
-            Please report issues in the [GitHub Issues](https://github.com/${{ github.repository }}/issues).
+            Please report issues in the [GitHub Issues](https://github.com/imngkhang/classin-appimage-wrapper/issues).
           files: |
             dist/ClassIn*.AppImage*
         env:
@@ -145,7 +145,7 @@ jobs:
             ```
 
             ## Issues & Support
-            Please report issues in the [GitHub Issues](https://github.com/${{ github.repository }}/issues).
+            Please report issues in the [GitHub Issues](https://github.com/imngkhang/classin-appimage-wrapper/issues).
           files: |
             dist/ClassIn*.AppImage*
         env:
