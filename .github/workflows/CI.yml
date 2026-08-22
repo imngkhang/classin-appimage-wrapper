@@ -7,6 +7,7 @@ on:
   # Run workflow every day at midnight and on manual trigger
   schedule:
     - cron: "0 0 * * *"  
+  push:
   workflow_dispatch: 
 
 jobs:
@@ -57,12 +58,12 @@ jobs:
           fi
         # Here we will build the AppImage
       - name: Build
-        if: steps.sync_check.outputs.should_release == 'true' || github.event_name == 'workflow_dispatch'
+        if: steps.sync_check.outputs.should_release == 'true' || github.event_name == 'push'
         run: |
           make build-all
         # Upload the built AppImage as an artifact
       - name: Upload artifact
-        if: steps.sync_check.outputs.should_release == 'true' || github.event_name == 'workflow_dispatch'
+        if: steps.sync_check.outputs.should_release == 'true' || github.event_name == 'push'
         uses: actions/upload-artifact@v4
         with:
           name: AppImage
@@ -70,7 +71,7 @@ jobs:
 
   release:
     needs: [check-and-build]
-    if: needs.check-and-build.outputs.should_release == 'true' || github.event_name == 'workflow_dispatch'
+    if: needs.check-and-build.outputs.should_release == 'true' || github.event_name == 'push'
     permissions: write-all
     runs-on: ubuntu-lastest
 
