@@ -39,13 +39,23 @@ Before installing or building this package, ensure your system meets the followi
 - **Architecture**: `x86_64` or `aarch64`
 - **Tools**: `jq`, `sha256sum`, `stat`, `wget`, `tar`, `ar`, `make`, from your distro
 - **Gear Lever** (*optional*): Lastest version from [Flathub](https://flathub.org/en/apps/it.mijorus.gearlever)
+- **AM/AppMan** (*optional*): Lastest version from [iVAN's repo](https://github.com/ivan-hc/AM)
 
 ### Install the AppImage:
-I recommend using [Gear Lever](https://github.com/mijorus/gearlever) to integrate the AppImage into your system menu.
+I recommend using [Gear Lever](https://github.com/mijorus/gearlever) or [AM](https://github.com/ivan-hc/AM) to integrate the AppImage into your system menu.
 
 1.  Download the latest `.AppImage` file from the [**Releases**](https://github.com/imngkhang/classin-appimage-wrapper/releases) page.
 2.  Running ClassIn by going to the [Running ClassIn](#running-classin) section.
 
+If you are using [AM or AppMan](https://github.com/ivan-hc/AM), you can install using this command:
+- For AM:
+  ```bash
+  am -i classin
+  ```
+- For AppMan:
+  ```bash
+  appman -i classin
+  ```
 
 ### Build from source
 
@@ -84,7 +94,12 @@ The `make` command will detect your architecture and build the corresponding App
 *Note: You can remove the development tools if you don't need, but DO NOT REMOVE other packages that installed.*
 
 ### Running ClassIn
-Using [Gear Lever](https://github.com/mijorus/gearlever), recommend:
+Using [AM/AppMan](https://github.com/ivan-hc/AM), recommended together with Gear Lever (it auto adds ClassIn to your path):
+```bash
+classin
+```
+
+Using [Gear Lever](https://github.com/mijorus/gearlever), recommended together with AM/AppMan:
 - Using GUI:
   1. Double-click to the AppImage, a window will appear
   2. Click "Move to the app menu"
