@@ -97,16 +97,26 @@ jobs:
             ```bash
             # Download the AppImage
             wget https://github.com/${{ github.repository }}/releases/download/${{ needs.check-and-build.outputs.app_version }}/ClassIn-${{ needs.check-and-build.outputs.raw_version_x64 }}-x86_64.AppImage
+            
             # Install with Gear Lever
             flatpak run it.mijorus.gearlever --integrate ClassIn-${{ needs.check-and-build.outputs.raw_version_x64 }}-x86_64.AppImage
+            
+            # Or run it manually
+            chmod +x ClassIn-${{ needs.check-and-build.outputs.raw_version_x64 }}-x86_64.AppImage
+            ./ClassIn-${{ needs.check-and-build.outputs.raw_version_x64 }}-x86_64.AppImage
             ```
             
             For aarch64:
             ```bash
             # Download the AppImage
             wget https://github.com/${{ github.repository }}/releases/download/${{ needs.check-and-build.outputs.app_version }}/ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-aarch64.AppImage
+            
             # Install with Gear Lever
             flatpak run it.mijorus.gearlever --integrate ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-aarch64.AppImage
+            
+            # Or run it manually
+            chmod +x ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-aarch64.AppImage
+            ./ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-aarch64.AppImage
             ```
 
             ## Issues & Support
@@ -132,9 +142,13 @@ jobs:
             ```bash
             # Download the AppImage
             wget https://github.com/${{ github.repository }}/releases/download/continuous/ClassIn-${{ needs.check-and-build.outputs.raw_version_x64 }}-x86_64.AppImage
-
+            
             # Install with Gear Lever
             flatpak run it.mijorus.gearlever --integrate ClassIn-${{ needs.check-and-build.outputs.raw_version_x64 }}-x86_64.AppImage
+
+            # Or run it manually
+            chmod +x ClassIn-${{ needs.check-and-build.outputs.raw_version_x64 }}-x86_64.AppImage
+            ./ClassIn-${{ needs.check-and-build.outputs.raw_version_x64 }}-x86_64.AppImage
             ```
             
             For aarch64:
@@ -144,6 +158,10 @@ jobs:
 
             # Install with Gear Lever
             flatpak run it.mijorus.gearlever --integrate ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-aarch64.AppImage
+
+            # Or run it manually
+            chmod +x ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-aarch64.AppImage
+            ./ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-aarch64.AppImage
             ```
 
             ## Issues & Support

@@ -17,6 +17,7 @@
 set -euo pipefail
 
 ARCH="aarch64"
+REPO="${GITHUB_REPOSITORY:-$(git config --get remote.origin.url | sed -E 's|.*github\.com[:/ ]||; s|\.git$||; s|/*$||')}"
 MANIFEST="manifest.json"
 DIST_DIR="dist"
 APPDIR="${DIST_DIR}/${ARCH}.AppDir"
@@ -117,14 +118,21 @@ fi
 
 if [[ -f "classin.desktop" ]]; then
   cp "classin.desktop" "$APPDIR/classin.desktop"
+  if grep -q "^X-AppImage-Version=" "$APPDIR/classin.desktop"; then
+    sed -i "s/^X-AppImage-Version=.*/X-AppImage-Version=${VERSION}/" "$APPDIR/classin.desktop"
+  else
+    echo "X-AppImage-Version=${VERSION}" >> "$APPDIR/classin.desktop"
+  fi
 else
   echo "Error: Desktop file not found in current directory." >&2
   exit 1
 fi
 
+UPDATE_INFO="gh-releases-zsync|${REPO}|continuous|ClassIn-*-${ARCH}.AppImage.zsync"
+
 OUTPUT_NAME="${DIST_DIR}/ClassIn-${VERSION}-${ARCH}.AppImage"
 echo "Packaging $OUTPUT_NAME..."
-ARCH="$ARCH" "$APPIMAGETOOL" --comp zstd "$APPDIR" "$OUTPUT_NAME"
+ARCH="$ARCH" "$APPIMAGETOOL" -u "${UPDATE_INFO}" --comp zstd "$APPDIR" "$OUTPUT_NAME"
 
 chmod -x "$OUTPUT_NAME"
 rm -rf "$APPIMAGETOOL"

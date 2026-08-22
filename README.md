@@ -19,21 +19,32 @@ Since ClassIn only officially provides `.deb` packages (which cannot be installe
   
 If you encounter any other issues, please report them on [GitHub Issues](https://github.com/imngkhang/classin-appimage-wrapper/issues).
 
+## Screenshots:
+
+Here is the screenshots of the app:
+
+- ClassIn login interface: [screenshot1.png](https://raw.githubusercontent.com/imngkhang/classin-appimage-wrapper/master/screenshots/screenshot1.png)
+- ClassIn main interface:  [screenshot2.png](https://raw.githubusercontent.com/imngkhang/classin-appimage-wrapper/master/screenshots/screenshot2.png)
+- ClassIn blackboard:      [screenshot3.png](https://raw.githubusercontent.com/imngkhang/classin-appimage-wrapper/master/screenshots/screenshot3.png)
+
 ## 🚀 Quick Start
 
 ### Requirements
 
 Before installing or building this package, ensure your system meets the following requirements:
 
-- **Linux**: Any versions
+- **Linux**: 2.6.14 or later
 - **Display Server**: X11 (recommended) or Wayland (with limitations)
 - **Architecture**: `x86_64` or `aarch64`
 - **Tools**: `jq`, `sha256sum`, `stat`, `wget`, `tar`, `ar`, `make`, from your distro
+- **Gear Lever** (*optional*): Lastest version from [Flathub](https://flathub.org/en/apps/it.mijorus.gearlever)
 
 ### Install the AppImage:
-```bash
-> **Note:** Releases will be available soon...
-```
+I recommend using [Gear Lever](https://github.com/mijorus/gearlever) to integrate the AppImage into your system menu.
+
+1.  Download the latest `.AppImage` file from the [**Releases**](https://github.com/imngkhang/classin-appimage-wrapper/releases) page.
+2.  Running ClassIn by going to the [Running ClassIn](#running-classin) section.
+
 
 ### Build from source
 
@@ -72,9 +83,20 @@ The `make` command will detect your architecture and build the corresponding App
 *Note: You can remove the development tools if you don't need, but DO NOT REMOVE other packages that installed.*
 
 ### Running ClassIn
+Using [Gear Lever](https://github.com/mijorus/gearlever), recommend:
+- Using GUI:
+  1. Double-click to the AppImage, a window will appear
+  2. Click "Move to the app menu"
+  3. Than click "Launch", you are ready to go!
+- Using CLI:
+  ```bash
+  flatpak run it.mijorus.gearlever --integrate ClassIn-*.AppImage
+  ```
+
+Or run it manually:
 ```bash
-chmod a+x ClassIn*.AppImage
-./ClassIn*.AppImage
+chmod a+x ClassIn-*.AppImage
+./ClassIn-*.AppImage
 ```
 
 ## 🤝 Contributing
