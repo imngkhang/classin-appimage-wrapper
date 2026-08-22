@@ -58,7 +58,7 @@ depends:
 
 # Clean up build artifacts
 clean:
-	@echo "==> Cleaning up build artifacts..."
+	@echo "Cleaning up build artifacts..."
 	@rm -rf dist/ *.AppDir/ appimagetool *.deb
 	@echo "Done!"
 

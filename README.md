@@ -35,6 +35,7 @@ Before installing or building this package, ensure your system meets the followi
 
 - **Linux**: 2.6.14 or later
 - **Display Server**: X11 (recommended) or Wayland (with limitations)
+- **glibc**: 2.38 or later (because ClassIn requires glibc 2.36, and some libraries requires 2.37)
 - **Architecture**: `x86_64` or `aarch64`
 - **Tools**: `jq`, `sha256sum`, `stat`, `wget`, `tar`, `ar`, `make`, from your distro
 - **Gear Lever** (*optional*): Lastest version from [Flathub](https://flathub.org/en/apps/it.mijorus.gearlever)
@@ -103,8 +104,8 @@ chmod a+x ClassIn-*.AppImage
 
 Contributions are always welcome! You can help by:
 - Reporting issues (crashes, problems, missing fonts/libs).
-- Submitting PRs to update the runtime version or the wrapper.
-- Improving metadata or manifest.
+- Submitting PRs to update the wrapper.
+- Improving the autobuild (CI) code and other parts.
 
 Want to become a **co-maintainer**? If you use ClassIn on Linux regularly, you can join in and help maintain this package!
 
