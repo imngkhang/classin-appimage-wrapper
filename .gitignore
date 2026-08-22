@@ -5,6 +5,8 @@ dist/
 # AppImage generated binaries & tools
 appimagetool
 *.AppImage
+*.AppImage.zsync
+*.zsync
 
 # Extra downloads & temporary files
 extra/
