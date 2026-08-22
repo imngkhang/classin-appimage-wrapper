@@ -14,12 +14,12 @@ This is an unofficial AppImage wrapper for ClassIn.
 
 Since ClassIn only officially provides `.deb` packages (which cannot be installed directly on Red Hat, SUSE, Arch, Gentoo-based, or immutable Linux distributions), this wrapper packages and extracts the official `.deb` binaries when user builds the AppImage.
 
-## ⚠️ Known Issues
+## ⚠️  Known Issues
   - **Screen sharing does not work on Wayland:** This is an upstream issue from ClassIn (EEO). The client lacks QtWayland and xdg-desktop-portal implementation, resulting in a black screen when attempting to share. A temporary workaround is running your session on X11, or use WMs or DEs that support it if your current DE removed X11 support (I will recommend WMs, for example, Openbox or i3).
   
 If you encounter any other issues, please report them on [GitHub Issues](https://github.com/imngkhang/classin-appimage-wrapper/issues).
 
-## Screenshots:
+## 📷 Screenshots:
 
 Here is the screenshots of the app:
 
