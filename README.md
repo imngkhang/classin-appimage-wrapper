@@ -23,9 +23,9 @@ If you encounter any other issues, please report them on [GitHub Issues](https:/
 
 Here is the screenshots of the app:
 
-- ClassIn login interface: [screenshot1.png](https://raw.githubusercontent.com/imngkhang/classin-appimage-wrapper/master/screenshots/screenshot1.png)
-- ClassIn main interface:  [screenshot2.png](https://raw.githubusercontent.com/imngkhang/classin-appimage-wrapper/master/screenshots/screenshot2.png)
-- ClassIn blackboard:      [screenshot3.png](https://raw.githubusercontent.com/imngkhang/classin-appimage-wrapper/master/screenshots/screenshot3.png)
+- ClassIn login interface: ![screenshot1.png](https://raw.githubusercontent.com/imngkhang/classin-appimage-wrapper/master/screenshots/screenshot1.png)
+- ClassIn main interface:  ![screenshot2.png](https://raw.githubusercontent.com/imngkhang/classin-appimage-wrapper/master/screenshots/screenshot2.png)
+- ClassIn blackboard:      ![screenshot3.png](https://raw.githubusercontent.com/imngkhang/classin-appimage-wrapper/master/screenshots/screenshot3.png)
 
 ## 🚀 Quick Start
 
