@@ -11,7 +11,7 @@ on:
 
 jobs:
   check-and-build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     outputs:
       should_release: ${{ steps.sync_check.outputs.should_release }}
       app_version: ${{ steps.sync_check.outputs.app_version }}
@@ -72,7 +72,7 @@ jobs:
     needs: [check-and-build]
     if: needs.check-and-build.outputs.should_release == 'true' || github.event_name == 'workflow_dispatch'
     permissions: write-all
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
 
     steps:
       # Download the built AppImage artifact
