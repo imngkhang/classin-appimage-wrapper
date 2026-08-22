@@ -96,7 +96,7 @@ jobs:
             For x86_64:
             ```bash
             # Download the AppImage
-            wget https://github.com/classin-appimage-wrapper/releases/download/${{ needs.check-and-build.outputs.app_version }}/ClassIn-${{ needs.check-and-build.outputs.raw_version_x64 }}-x86_64.AppImage
+            wget https://github.com/${{ github.repository }}/releases/download/${{ needs.check-and-build.outputs.app_version }}/ClassIn-${{ needs.check-and-build.outputs.raw_version_x64 }}-x86_64.AppImage
             # Install with Gear Lever
             flatpak run it.mijorus.gearlever --integrate ClassIn-${{ needs.check-and-build.outputs.raw_version_x64 }}-x86_64.AppImage
             ```
@@ -104,13 +104,13 @@ jobs:
             For aarch64:
             ```bash
             # Download the AppImage
-            wget https://github.com/classin-appimage-wrapper/releases/download/${{ needs.check-and-build.outputs.app_version }}/ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-aarch64.AppImage
+            wget https://github.com/${{ github.repository }}/releases/download/${{ needs.check-and-build.outputs.app_version }}/ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-aarch64.AppImage
             # Install with Gear Lever
             flatpak run it.mijorus.gearlever --integrate ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-aarch64.AppImage
             ```
 
             ## Issues & Support
-            Please report issues in the [GitHub Issues](https://github.com/imngkhang/classin-appimage-wrapper/issues).
+            Please report issues in the [GitHub Issues](https://github.com/${{ github.repository }}/issues).
           files: |
             dist/ClassIn*.AppImage*
         env:
@@ -119,17 +119,18 @@ jobs:
       - name: Update continuous release
         uses: softprops/action-gh-release@v2
         with:
-          title: Continuous build (Unofficial)
-          automatic_release_tag: continuous
-          prerelease: false
-          draft: false
+          name: "Continuous build (Unofficial)"
+          tag_name: "continuous"
+          prerelease: true
+          make_latest: false
           body: |
             It is recommended to use [Gear Lever](https://github.com/mijorus/gearlever) to manage and integrate the AppImage.
             
             For x86_64:
             ```bash
             # Download the AppImage
-            wget https://github.com/classin-appimage-wrapper/releases/download/continuous/ClassIn-${{ needs.check-and-build.outputs.raw_version_x64 }}-x86_64.AppImage
+            wget https://github.com/${{ github.repository }}/releases/download/continuous/ClassIn-${{ needs.check-and-build.outputs.raw_version_x64 }}-x86_64.AppImage
+
             # Install with Gear Lever
             flatpak run it.mijorus.gearlever --integrate ClassIn-${{ needs.check-and-build.outputs.raw_version_x64 }}-x86_64.AppImage
             ```
@@ -137,13 +138,15 @@ jobs:
             For aarch64:
             ```bash
             # Download the AppImage
-            wget https://github.com/classin-appimage-wrapper/releases/download/continuous/ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-aarch64.AppImage
+            wget https://github.com/${{ github.repository }}/releases/download/continuous/ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-aarch64.AppImage
+
             # Install with Gear Lever
             flatpak run it.mijorus.gearlever --integrate ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-aarch64.AppImage
             ```
 
             ## Issues & Support
-            Please report issues in the [GitHub Issues](https://github.com/imngkhang/classin-appimage-wrapper/issues).
+            Please report issues in the [GitHub Issues](https://github.com/${{ github.repository }}/issues).
           files: |
             dist/ClassIn*.AppImage*
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
