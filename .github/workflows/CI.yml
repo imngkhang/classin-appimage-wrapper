@@ -89,7 +89,7 @@ jobs:
           prerelease: false
           draft: false
           generate_release_notes: false
-          make_latest: true
+          make_latest: false
           body: |
             It is recommended to use [Gear Lever](https://github.com/mijorus/gearlever) to manage and integrate the AppImage.
             
@@ -121,8 +121,10 @@ jobs:
         with:
           name: "Continuous build (Unofficial)"
           tag_name: "continuous"
-          prerelease: true
-          make_latest: false
+          prerelease: false
+          draft: false
+          generate_release_notes: false
+          make_latest: true
           body: |
             It is recommended to use [Gear Lever](https://github.com/mijorus/gearlever) to manage and integrate the AppImage.
             
