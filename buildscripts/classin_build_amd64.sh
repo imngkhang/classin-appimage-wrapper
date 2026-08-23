@@ -17,7 +17,8 @@
 set -euo pipefail
 
 ARCH="x86_64"
-REPO="${GITHUB_REPOSITORY:-$(git config --get remote.origin.url | sed -E 's|.*github\.com[:/ ]||; s|\.git$||; s|/*$||' | sed 's|\/|\||')}"
+RAW_REPO="${GITHUB_REPOSITORY:-$(git config --get remote.origin.url | sed -E 's|.*github\.com[:/ ]||; s|\.git$||; s|/*$||')}"
+REPO=$(echo "$RAW_REPO" | sed 's|\/|\||' | sed -E 's|^[^a-zA-Z0-9]+||')
 MANIFEST="manifest.json"
 DIST_DIR="dist"
 APPDIR="${DIST_DIR}/${ARCH}.AppDir"
