@@ -71,3 +71,4 @@ help:
 	@echo "  make build-all - Build all architectures"
 	@echo "  make clean     - Remove build and temporary files"
 	@echo "  make depends   - Check dependencies for building"
+	@echo "  make help      - Show this help and exit"
