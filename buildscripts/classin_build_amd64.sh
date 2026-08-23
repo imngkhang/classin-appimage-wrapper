@@ -130,7 +130,7 @@ else
   exit 1
 fi
 
-UPDATE_INFO="gh-releases-zsync|${REPO}|continuous|*-${ARCH}.AppImage.zsync"
+UPDATE_INFO="gh-releases-zsync|${REPO}|continuous|ClassIn-*-${ARCH}.AppImage.zsync"
 
 OUTPUT_NAME="${DIST_DIR}/ClassIn-${VERSION}-${ARCH}.AppImage"
 echo "Packaging $OUTPUT_NAME..."
