@@ -17,7 +17,7 @@
 set -euo pipefail
 
 ARCH="x86_64"
-REPO="${GITHUB_REPOSITORY:-$(git config --get remote.origin.url | sed -E 's|.*github\.com[:/ ]||; s|\.git$||; s|/*$||')}"
+REPO="${GITHUB_REPOSITORY:-$(git config --get remote.origin.url | sed -E 's|.*github\.com[:/ ]||; s|\.git$||; s|/*$||' | sed 's|\/|\||')}"
 MANIFEST="manifest.json"
 DIST_DIR="dist"
 APPDIR="${DIST_DIR}/${ARCH}.AppDir"
@@ -129,7 +129,7 @@ else
   exit 1
 fi
 
-UPDATE_INFO="gh-releases-zsync|${REPO}|continuous|ClassIn-*-${ARCH}.AppImage.zsync"
+UPDATE_INFO="gh-releases-zsync|${REPO}|continuous|*-${ARCH}.AppImage.zsync"
 
 OUTPUT_NAME="${DIST_DIR}/ClassIn-${VERSION}-${ARCH}.AppImage"
 echo "Packaging $OUTPUT_NAME..."
