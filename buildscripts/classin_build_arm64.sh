@@ -22,6 +22,7 @@ MANIFEST="manifest.json"
 DIST_DIR="dist"
 APPDIR="${DIST_DIR}/${ARCH}.AppDir"
 APPIMAGETOOL="./appimagetool"
+COMPRESSLEVEL="20"
 
 echo "=== Building AppImage for ${ARCH} ==="
 
@@ -133,11 +134,10 @@ UPDATE_INFO="gh-releases-zsync|${REPO}|continuous|ClassIn-*-${ARCH}.AppImage.zsy
 OUTPUT_NAME="${DIST_DIR}/ClassIn-${VERSION}-${ARCH}.AppImage"
 echo "Packaging $OUTPUT_NAME..."
 (
- ARCH="$ARCH" "$APPIMAGETOOL" -u "${UPDATE_INFO}" --comp zstd "$APPDIR" "$OUTPUT_NAME" && \
+ ARCH="$ARCH" "$APPIMAGETOOL" -u "${UPDATE_INFO}" --comp zstd --mksquashfs-opt -Xcompression-level --mksquashfs-opt "$COMPRESSLEVEL" "$APPDIR" "$OUTPUT_NAME" && \
  mv *.AppImage.zsync dist/ 2>/dev/null || false
 )
 
 chmod -x "$OUTPUT_NAME"
-rm -rf "$APPIMAGETOOL"
 
 echo "=== Build completed: $OUTPUT_NAME ==="
