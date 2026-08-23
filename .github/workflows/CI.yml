@@ -119,7 +119,7 @@ jobs:
             ./ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-aarch64.AppImage
             ```
             
-            *Note for AM/AppMan users: The intrucsions to install ClassIn is included in [the README](https://github.com/imngkhang/classin-appimage-wrapper/blob/master/README.md#install-the-appimage). You don't need to run the above commands.*
+            *Note for AM/AppMan users: The intrucsions to install ClassIn is included in [the README](https://github.com/imngkhang/classin-appimage-wrapper/#install-the-appimage). You don't need to run the above commands.*
 
             ## Issues & Support
             Please report issues in the [GitHub Issues](https://github.com/imngkhang/classin-appimage-wrapper/issues).
@@ -166,7 +166,7 @@ jobs:
             ./ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-aarch64.AppImage
             ```
             
-            *Note for AM/AppMan users: The intrucsions to install ClassIn is included in [the README](https://github.com/imngkhang/classin-appimage-wrapper/blob/master/README.md#install-the-appimage). You don't need to run the above commands.*
+            *Note for AM/AppMan users: The intrucsions to install ClassIn is included in [the README](https://github.com/imngkhang/classin-appimage-wrapper/#install-the-appimage). You don't need to run the above commands.*
             
             ## Issues & Support
             Please report issues in the [GitHub Issues](https://github.com/imngkhang/classin-appimage-wrapper/issues).
