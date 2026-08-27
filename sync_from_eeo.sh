@@ -45,6 +45,11 @@ VER_ARM64=$(echo "$CONFIG_DATA" | jq -r '.[] | select(.confName=="eeocn_linux_ar
 echo "AMD64 Version: $VER_AMD64"
 echo "ARM64 Version: $VER_ARM64"
 
+if [[ -z "$VER_AMD64" || "$VER_AMD64" == "null" ]] || [[ -z "$VER_ARM64" || "$VER_ARM64" == "null" ]]; then
+    echo "Error: null version. Exiting..."
+    exit 1
+fi
+
 # Check if the manifest file needs to be regenerated
 NEED_MANIFEST_GEN=true
 if [[ -f "$MANIFEST_OUTPUT" ]]; then
