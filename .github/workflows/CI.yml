@@ -59,7 +59,7 @@ jobs:
       - name: Build
         if: steps.sync_check.outputs.should_release == 'true' || github.event_name == 'workflow_dispatch' 
         run: |
-          make build-all
+          make -j$(nproc) --output-sync=target build-all
         # Upload the built AppImage as an artifact
       - name: Upload artifact
         if: steps.sync_check.outputs.should_release == 'true' || github.event_name == 'workflow_dispatch'
