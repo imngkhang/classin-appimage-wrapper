@@ -66,7 +66,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: AppImage
-          path: 'dist'
+          path: 'dist/**/*.AppImage*'
 
   release:
     needs: [check-and-build]
@@ -96,27 +96,27 @@ jobs:
             For x86_64:
             ```bash
             # Download the AppImage
-            wget https://github.com/${{ github.repository }}/releases/download/${{ needs.check-and-build.outputs.app_version }}/ClassIn-${{ needs.check-and-build.outputs.raw_version_x64 }}-x86_64.AppImage
+            wget https://github.com/${{ github.repository }}/releases/download/${{ needs.check-and-build.outputs.app_version }}/ClassIn-${{ needs.check-and-build.outputs.raw_version_x64 }}-anylinux-x86_64.AppImage
             
             # Install with Gear Lever
-            flatpak run it.mijorus.gearlever --integrate ClassIn-${{ needs.check-and-build.outputs.raw_version_x64 }}-x86_64.AppImage
+            flatpak run it.mijorus.gearlever --integrate ClassIn-${{ needs.check-and-build.outputs.raw_version_x64 }}-anylinux-x86_64.AppImage
             
             # Or run it manually
-            chmod +x ClassIn-${{ needs.check-and-build.outputs.raw_version_x64 }}-x86_64.AppImage
-            ./ClassIn-${{ needs.check-and-build.outputs.raw_version_x64 }}-x86_64.AppImage
+            chmod +x ClassIn-${{ needs.check-and-build.outputs.raw_version_x64 }}-anylinux-x86_64.AppImage
+            ./ClassIn-${{ needs.check-and-build.outputs.raw_version_x64 }}-anylinux-x86_64.AppImage
             ```
             
             For aarch64:
             ```bash
             # Download the AppImage
-            wget https://github.com/${{ github.repository }}/releases/download/${{ needs.check-and-build.outputs.app_version }}/ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-aarch64.AppImage
+            wget https://github.com/${{ github.repository }}/releases/download/${{ needs.check-and-build.outputs.app_version }}/ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-anylinux-aarch64.AppImage
             
             # Install with Gear Lever
-            flatpak run it.mijorus.gearlever --integrate ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-aarch64.AppImage
+            flatpak run it.mijorus.gearlever --integrate ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-anylinux-aarch64.AppImage
             
             # Or run it manually
-            chmod +x ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-aarch64.AppImage
-            ./ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-aarch64.AppImage
+            chmod +x ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-anylinux-aarch64.AppImage
+            ./ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-anylinux-aarch64.AppImage
             ```
             
             *Note for AM/AppMan users: The intrucsions to install ClassIn is included in [the README](https://github.com/imngkhang/classin-appimage-wrapper/#install-the-appimage). You don't need to run the above commands.*
@@ -124,7 +124,7 @@ jobs:
             ## Issues & Support
             Please report issues in the [GitHub Issues](https://github.com/imngkhang/classin-appimage-wrapper/issues).
           files: |
-            dist/ClassIn*.AppImage*
+            dist/ClassIn*anylinux*.AppImage*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # Create a continuous release and upload the AppImage
@@ -143,27 +143,27 @@ jobs:
             For x86_64:
             ```bash
             # Download the AppImage
-            wget https://github.com/${{ github.repository }}/releases/download/continuous/ClassIn-${{ needs.check-and-build.outputs.raw_version_x64 }}-x86_64.AppImage
+            wget https://github.com/${{ github.repository }}/releases/download/continuous/ClassIn-${{ needs.check-and-build.outputs.raw_version_x64 }}-anylinux-x86_64.AppImage
             
             # Install with Gear Lever
-            flatpak run it.mijorus.gearlever --integrate ClassIn-${{ needs.check-and-build.outputs.raw_version_x64 }}-x86_64.AppImage
+            flatpak run it.mijorus.gearlever --integrate ClassIn-${{ needs.check-and-build.outputs.raw_version_x64 }}-anylinux-x86_64.AppImage
 
             # Or run it manually
-            chmod +x ClassIn-${{ needs.check-and-build.outputs.raw_version_x64 }}-x86_64.AppImage
-            ./ClassIn-${{ needs.check-and-build.outputs.raw_version_x64 }}-x86_64.AppImage
+            chmod +x ClassIn-${{ needs.check-and-build.outputs.raw_version_x64 }}-anylinux-x86_64.AppImage
+            ./ClassIn-${{ needs.check-and-build.outputs.raw_version_x64 }}-anylinux-x86_64.AppImage
             ```
             
             For aarch64:
             ```bash
             # Download the AppImage
-            wget https://github.com/${{ github.repository }}/releases/download/continuous/ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-aarch64.AppImage
+            wget https://github.com/${{ github.repository }}/releases/download/continuous/ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-anylinux-aarch64.AppImage
 
             # Install with Gear Lever
-            flatpak run it.mijorus.gearlever --integrate ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-aarch64.AppImage
+            flatpak run it.mijorus.gearlever --integrate ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-anylinux-aarch64.AppImage
 
             # Or run it manually
-            chmod +x ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-aarch64.AppImage
-            ./ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-aarch64.AppImage
+            chmod +x ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-anylinux-aarch64.AppImage
+            ./ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-anylinux-aarch64.AppImage
             ```
             
             *Note for AM/AppMan users: The intrucsions to install ClassIn is included in [the README](https://github.com/imngkhang/classin-appimage-wrapper/#install-the-appimage). You don't need to run the above commands.*
@@ -171,6 +171,6 @@ jobs:
             ## Issues & Support
             Please report issues in the [GitHub Issues](https://github.com/imngkhang/classin-appimage-wrapper/issues).
           files: |
-            dist/ClassIn*.AppImage*
+            dist/ClassIn*anylinux*.AppImage*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

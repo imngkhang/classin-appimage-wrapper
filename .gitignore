@@ -3,11 +3,12 @@ dist/
 *.AppDir/
 
 # AppImage generated binaries & tools
-appimagetool
+appimagetool*
 *.AppImage
 *.AppImage.zsync
 *.zsync
 runtime*
+*appinfo*
 
 # Extra downloads & temporary files
 extra/

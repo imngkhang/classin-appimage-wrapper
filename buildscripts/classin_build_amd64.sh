@@ -16,14 +16,18 @@
 
 set -euo pipefail
 
-ARCH="x86_64"
+export ARCH="x86_64"
 RAW_REPO="${GITHUB_REPOSITORY:-$(git config --get remote.origin.url | sed -E 's|.*github\.com[:/ ]||; s|\.git$||; s|/*$||')}"
 REPO=$(echo "$RAW_REPO" | sed 's|\/|\||' | sed -E 's|^[^a-zA-Z0-9]+||')
 MANIFEST="manifest.json"
 DIST_DIR="dist"
 APPDIR="${DIST_DIR}/${ARCH}.AppDir"
-APPIMAGETOOL="./appimagetool"
-COMPRESSLEVEL="20"
+export APP_NAME="ClassIn"
+export DESKTOP="classin.desktop"
+export ICON="classin.svg"
+export STARTUPWMCLASS="ClassIn"
+APPIMAGETOOL="./appimagetool-${ARCH}"
+export UPINFO="gh-releases-zsync|${REPO}|continuous|ClassIn-*-anylinux-${ARCH}.AppImage.zsync"
 
 echo "=== Building AppImage for ${ARCH} ==="
 
@@ -44,15 +48,15 @@ done
 URL=$(jq -r '.architectures.x86_64.url' "$MANIFEST")
 EXPECTED_SHA256=$(jq -r '.architectures.x86_64.sha256' "$MANIFEST")
 EXPECTED_SIZE=$(jq -r '.architectures.x86_64.size' "$MANIFEST")
-VERSION=$(jq -r '.architectures.x86_64.version' "$MANIFEST")
+VER=$(jq -r '.architectures.x86_64.version' "$MANIFEST")
 
-echo "Version: ${VERSION}"
+echo "Version: ${VER}"
 echo "URL: ${URL}"
 
 # Download appimagetool
 if [[ ! -f "$APPIMAGETOOL" ]]; then
   echo "Downloading appimagetool..."
-  wget -q https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage -O "$APPIMAGETOOL"
+  wget -q https://raw.githubusercontent.com/pkgforge-dev/Anylinux-AppImages/refs/heads/main/useful-tools/quick-sharun.sh -O "$APPIMAGETOOL"
   chmod +x "$APPIMAGETOOL"
 fi
 
@@ -102,6 +106,7 @@ rm -f control.tar.* data.tar.* debian-binary classin.deb
 cd - >/dev/null
 
 # Setup and build the AppImage
+
 echo "Setting up $APPDIR..."
 mkdir -p "$DIST_DIR"
 rm -rf "$APPDIR"
@@ -120,25 +125,23 @@ fi
 
 if [[ -f "classin.desktop" ]]; then
   cp "classin.desktop" "$APPDIR/classin.desktop"
-  if grep -q "^X-AppImage-Version=" "$APPDIR/classin.desktop"; then
-    sed -i "s/^X-AppImage-Version=.*/X-AppImage-Version=${VERSION}/" "$APPDIR/classin.desktop"
-  else
-    echo "X-AppImage-Version=${VERSION}" >> "$APPDIR/classin.desktop"
-  fi
 else
   echo "Error: Desktop file not found in current directory." >&2
   exit 1
 fi
 
-UPDATE_INFO="gh-releases-zsync|${REPO}|continuous|ClassIn-*-${ARCH}.AppImage.zsync"
+export VERSION="$VER"
+export APPDIR="$APPDIR"
+export OUTNAME="ClassIn-${VER}-anylinux-${ARCH}.AppImage"
+echo "Packaging $OUTNAME..."
 
-OUTPUT_NAME="${DIST_DIR}/ClassIn-${VERSION}-${ARCH}.AppImage"
-echo "Packaging $OUTPUT_NAME..."
-(
- ARCH="$ARCH" "$APPIMAGETOOL" -u "${UPDATE_INFO}" --comp zstd --mksquashfs-opt -Xcompression-level --mksquashfs-opt "$COMPRESSLEVEL" "$APPDIR" "$OUTPUT_NAME" && \
- mv *.AppImage.zsync dist/ 2>/dev/null || false
-)
+DEPLOY_GLIBC=1 "$APPIMAGETOOL" --make-appimage
 
-chmod -x "$OUTPUT_NAME"
+chmod -x "$OUTNAME" || true
 
-echo "=== Build completed: $OUTPUT_NAME ==="
+mv "./${OUTNAME}" "${DIST_DIR}/" 2>/dev/null || true
+mv "./${OUTNAME}.zsync" "${DIST_DIR}/" 2>/dev/null || true
+
+echo "=== Build completed: $OUTNAME ==="
+
+rm -rf appinfo 2>/dev/null || true
