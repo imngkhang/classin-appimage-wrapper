@@ -10,7 +10,7 @@ ClassIn is a registered trademark of Empower Education Online Ltd. (EEO). This p
 
 ## Description
 
-This is an unofficial AppImage wrapper for ClassIn. 
+This is an unofficial AppImage wrapper for ClassIn, that is built on top of [Anylinux-AppImages](https://github.com/pkgforge-dev/Anylinux-AppImages), which is designed for run seamlessly on any Linux distribution, including very very old distributions and musl-based ones.
 
 Since ClassIn only officially provides `.deb` packages (which cannot be installed directly on Red Hat, SUSE, Arch, Gentoo-based, or immutable Linux distributions), this wrapper packages and extracts the official `.deb` binaries when user builds the AppImage.
 
@@ -33,9 +33,9 @@ Here is the screenshots of the app:
 
 Before installing or building this package, ensure your system meets the following requirements:
 
-- **Linux**: 2.6.14 or later
+- **Linux**: ANY versions, because this is an *Anylinux AppImage*
 - **Display Server**: X11 (recommended) or Wayland (with limitations)
-- **glibc**: 2.38 or later (because ClassIn requires glibc 2.36, and some libraries requires 2.37)
+- **libc**: ANY, even musl or very old glibc
 - **Architecture**: `x86_64` or `aarch64`
 - **Tools**: `jq`, `sha256sum`, `stat`, `wget`, `tar`, `ar`, `make`, from your distro
 - **Gear Lever** (*optional*): Lastest version from [Flathub](https://flathub.org/en/apps/it.mijorus.gearlever)
