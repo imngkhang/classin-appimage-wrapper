@@ -66,7 +66,7 @@ If you are using [AM or AppMan](https://github.com/ivan-hc/AM), you can install 
 
 - **Fedora / Red Hat:**
   ```bash
-  sudo dnf groupinstall "Development Tools" && sudo dnf install jq wget tar coreutils
+  sudo dnf install @development-tools jq wget tar coreutils
   ```
 
 - **Arch Linux / Manjaro:**
