@@ -37,7 +37,7 @@ Before installing or building this package, ensure your system meets the followi
 - **Display Server**: X11 (recommended) or Wayland (with limitations)
 - **libc**: ANY, even musl or very old glibc
 - **Architecture**: `x86_64` or `aarch64`
-- **Tools**: `jq`, `sha256sum`, `stat`, `wget`, `tar`, `ar`, `make`, from your distro
+- **Tools**: `jq`, `sha256sum`, `stat`, `wget`, `tar`, `ar`, `make`, `zsync`, from your distro
 - **Gear Lever** (*optional*): Lastest version from [Flathub](https://flathub.org/en/apps/it.mijorus.gearlever)
 - **AM/AppMan** (*optional*): Lastest version from [iVAN's repo](https://github.com/ivan-hc/AM)
 
@@ -61,27 +61,27 @@ If you are using [AM or AppMan](https://github.com/ivan-hc/AM), you can install 
 
 - **Debian / Ubuntu:**
   ```bash
-  sudo apt update && sudo apt install build-essential jq wget tar coreutils
+  sudo apt update && sudo apt install build-essential jq wget tar coreutils zsync
   ```
 
 - **Fedora / Red Hat:**
   ```bash
-  sudo dnf install @development-tools jq wget tar coreutils
+  sudo dnf install @development-tools jq wget tar coreutils zsync
   ```
 
 - **Arch Linux / Manjaro:**
   ```bash
-  sudo pacman -Syu --needed base-devel jq wget tar coreutils
+  sudo pacman -Syu --needed base-devel jq wget tar coreutils zsync
   ```
 
 - **openSUSE (Leap / Tumbleweed):**
   ```bash
-  sudo zypper in -t pattern devel_basis && sudo zypper in jq wget tar coreutils
+  sudo zypper in -t pattern devel_basis && sudo zypper in jq wget tar coreutils zsync
   ```
 
 - **Gentoo:**
   ```bash
-  sudo emerge --ask sys-devel/make sys-devel/binutils app-misc/jq net-misc/wget app-arch/tar sys-apps/coreutils
+  sudo emerge --ask sys-devel/make sys-devel/binutils app-misc/jq net-misc/wget app-arch/tar sys-apps/coreutils net-misc/zsync
   ```
 
 - **Locally build an AppImage:**

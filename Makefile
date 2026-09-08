@@ -48,7 +48,7 @@ build-all: x86_64 aarch64
 
 # Check dependencies
 depends:
-	@for cmd in jq wget ar tar sha256sum stat; do \
+	@for cmd in jq wget ar tar sha256sum stat zsyncmake; do \
 		if ! command -v $$cmd >/dev/null 2>&1; then \
 			echo "Missing: $$cmd"; \
 		else \
