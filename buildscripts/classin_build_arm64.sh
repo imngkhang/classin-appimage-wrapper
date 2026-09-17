@@ -131,7 +131,7 @@ fi
 
 export VERSION="$VER"
 export APPDIR="$APPDIR"
-export OUTNAME="ClassIn-${VER}-anylinux-${ARCH}.AppImage"
+export OUTNAME="ClassIn-${VER}-${ARCH}.AppImage"
 echo "Packaging $OUTNAME..."
 
 DEPLOY_GLIBC=1 "$APPIMAGETOOL" --make-appimage

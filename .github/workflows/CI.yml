@@ -10,15 +10,15 @@ on:
   workflow_dispatch: 
 
 jobs:
-  check-and-build:
+  check-version:
     runs-on: ubuntu-latest
     outputs:
       should_release: ${{ steps.sync_check.outputs.should_release }}
       app_version: ${{ steps.sync_check.outputs.app_version }}
       raw_version_x64: ${{ steps.sync_check.outputs.raw_version_x64 }}
       raw_version_aa64: ${{ steps.sync_check.outputs.raw_version_aa64 }}
-    # Checkout the repo
     steps:
+      # Checkout the repo
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0 
@@ -27,10 +27,9 @@ jobs:
       - name: Sync and check for new version
         id: sync_check
         run: |
-          chmod a+x ./sync_from_eeo.sh 2>/dev/null || false
+          chmod a+x ./sync_from_eeo.sh 2>/dev/null || true
           ./sync_from_eeo.sh
           
-          # We will cut the version to major.minor.patch only, as the build number is not relevant for the release
           RAW_VER_x64=$(jq -r '.architectures.x86_64.version' manifest.json 2>/dev/null || echo "")
           RAW_VER_aa64=$(jq -r '.architectures.aarch64.version' manifest.json 2>/dev/null || echo "")
           
@@ -38,7 +37,6 @@ jobs:
           echo "raw_version_x64=${RAW_VER_x64}" >> $GITHUB_OUTPUT
           echo "raw_version_aa64=${RAW_VER_aa64}" >> $GITHUB_OUTPUT
           echo "app_version=${APP_VER}" >> $GITHUB_OUTPUT
-          
           # If the tag already exists, we don't need to build or release
           if git rev-parse "$APP_VER" >/dev/null 2>&1; then
             echo "Tag $APP_VER already exists."
@@ -50,27 +48,44 @@ jobs:
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
             if [ -n "$(git status --porcelain)" ]; then
-              git add .
+              git add manifest.json
               git commit -m "bot: Auto-update manifest to $APP_VER"
               git push
             fi
           fi
-        # Here we will build the AppImage
+  build:
+    needs: [check-version]
+    if: needs.check-version.outputs.should_release == 'true' || github.event_name == 'workflow_dispatch'
+    name: "Build AppImage (${{ matrix.arch }})"
+    runs-on: ${{ matrix.runs-on }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x86_64
+            runs-on: ubuntu-latest
+          - arch: aarch64
+            runs-on: ubuntu-24.04-arm
+    container: ghcr.io/pkgforge-dev/archlinux:latest
+    steps:
+      - uses: actions/checkout@v4
+      # Preparing the container for anylinux build
+      - name: Preparing Container
+        uses: pkgforge-dev/anylinux-setup-action@0964f2258d6c93d1391359978dde081fd8b3c6af 
+      # Here we will build the AppImage
       - name: Build
-        if: steps.sync_check.outputs.should_release == 'true' || github.event_name == 'workflow_dispatch' 
         run: |
-          make -j$(nproc) --output-sync=target build-all
-        # Upload the built AppImage as an artifact
+          make -j$(nproc) ${{ matrix.arch }}
+      # Upload the built AppImage as an artifact
       - name: Upload artifact
-        if: steps.sync_check.outputs.should_release == 'true' || github.event_name == 'workflow_dispatch'
         uses: actions/upload-artifact@v4
         with:
-          name: AppImage
+          name: AppImage-${{ matrix.arch }}
           path: 'dist/**/*.AppImage*'
 
   release:
-    needs: [check-and-build]
-    if: needs.check-and-build.outputs.should_release == 'true'  || github.event_name == 'workflow_dispatch'
+    needs: [check-version, build]
+    if: needs.check-version.outputs.should_release == 'true'  || github.event_name == 'workflow_dispatch'
     permissions: write-all
     runs-on: ubuntu-latest
 
@@ -78,14 +93,15 @@ jobs:
       # Download the built AppImage artifact
       - uses: actions/download-artifact@v4
         with:
-          name: AppImage
+          pattern: AppImage-*      
           path: dist
+          merge-multiple: true
       # Create a versioned release and upload the AppImage
       - name: Create versioned release
         uses: softprops/action-gh-release@v2
         with:
-          name: "Version ${{ needs.check-and-build.outputs.app_version }} (Unofficial)"
-          tag_name: "${{ needs.check-and-build.outputs.app_version }}"
+          name: "Version ${{ needs.check-version.outputs.app_version }} (Unofficial)"
+          tag_name: "${{ needs.check-version.outputs.app_version }}"
           prerelease: false
           draft: false
           generate_release_notes: false
@@ -96,27 +112,27 @@ jobs:
             For x86_64:
             ```bash
             # Download the AppImage
-            wget https://github.com/${{ github.repository }}/releases/download/${{ needs.check-and-build.outputs.app_version }}/ClassIn-${{ needs.check-and-build.outputs.raw_version_x64 }}-anylinux-x86_64.AppImage
+            wget https://github.com/${{ github.repository }}/releases/download/${{ needs.check-version.outputs.app_version }}/ClassIn-${{ needs.check-version.outputs.raw_version_x64 }}-x86_64.AppImage
             
             # Install with Gear Lever
-            flatpak run it.mijorus.gearlever --integrate ClassIn-${{ needs.check-and-build.outputs.raw_version_x64 }}-anylinux-x86_64.AppImage
+            flatpak run it.mijorus.gearlever --integrate ClassIn-${{ needs.check-version.outputs.raw_version_x64 }}-x86_64.AppImage
             
             # Or run it manually
-            chmod +x ClassIn-${{ needs.check-and-build.outputs.raw_version_x64 }}-anylinux-x86_64.AppImage
-            ./ClassIn-${{ needs.check-and-build.outputs.raw_version_x64 }}-anylinux-x86_64.AppImage
+            chmod +x ClassIn-${{ needs.check-version.outputs.raw_version_x64 }}-x86_64.AppImage
+            ./ClassIn-${{ needs.check-version.outputs.raw_version_x64 }}-x86_64.AppImage
             ```
             
             For aarch64:
             ```bash
             # Download the AppImage
-            wget https://github.com/${{ github.repository }}/releases/download/${{ needs.check-and-build.outputs.app_version }}/ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-anylinux-aarch64.AppImage
+            wget https://github.com/${{ github.repository }}/releases/download/${{ needs.check-version.outputs.app_version }}/ClassIn-${{ needs.check-version.outputs.raw_version_aa64 }}-aarch64.AppImage
             
             # Install with Gear Lever
-            flatpak run it.mijorus.gearlever --integrate ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-anylinux-aarch64.AppImage
+            flatpak run it.mijorus.gearlever --integrate ClassIn-${{ needs.check-version.outputs.raw_version_aa64 }}-aarch64.AppImage
             
             # Or run it manually
-            chmod +x ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-anylinux-aarch64.AppImage
-            ./ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-anylinux-aarch64.AppImage
+            chmod +x ClassIn-${{ needs.check-version.outputs.raw_version_aa64 }}-aarch64.AppImage
+            ./ClassIn-${{ needs.check-version.outputs.raw_version_aa64 }}-aarch64.AppImage
             ```
             
             *Note for AM/AppMan users: The intrucsions to install ClassIn is included in [the README](https://github.com/imngkhang/classin-appimage-wrapper/#install-the-appimage). You don't need to run the above commands.*
@@ -124,7 +140,7 @@ jobs:
             ## Issues & Support
             Please report issues in the [GitHub Issues](https://github.com/imngkhang/classin-appimage-wrapper/issues).
           files: |
-            dist/ClassIn*anylinux*.AppImage*
+            dist/ClassIn*.AppImage*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # Create a continuous release and upload the AppImage
@@ -143,27 +159,27 @@ jobs:
             For x86_64:
             ```bash
             # Download the AppImage
-            wget https://github.com/${{ github.repository }}/releases/download/continuous/ClassIn-${{ needs.check-and-build.outputs.raw_version_x64 }}-anylinux-x86_64.AppImage
+            wget https://github.com/${{ github.repository }}/releases/download/continuous/ClassIn-${{ needs.check-version.outputs.raw_version_x64 }}-x86_64.AppImage
             
             # Install with Gear Lever
-            flatpak run it.mijorus.gearlever --integrate ClassIn-${{ needs.check-and-build.outputs.raw_version_x64 }}-anylinux-x86_64.AppImage
+            flatpak run it.mijorus.gearlever --integrate ClassIn-${{ needs.check-version.outputs.raw_version_x64 }}-x86_64.AppImage
 
             # Or run it manually
-            chmod +x ClassIn-${{ needs.check-and-build.outputs.raw_version_x64 }}-anylinux-x86_64.AppImage
-            ./ClassIn-${{ needs.check-and-build.outputs.raw_version_x64 }}-anylinux-x86_64.AppImage
+            chmod +x ClassIn-${{ needs.check-version.outputs.raw_version_x64 }}-x86_64.AppImage
+            ./ClassIn-${{ needs.check-version.outputs.raw_version_x64 }}-x86_64.AppImage
             ```
             
             For aarch64:
             ```bash
             # Download the AppImage
-            wget https://github.com/${{ github.repository }}/releases/download/continuous/ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-anylinux-aarch64.AppImage
+            wget https://github.com/${{ github.repository }}/releases/download/continuous/ClassIn-${{ needs.check-version.outputs.raw_version_aa64 }}-aarch64.AppImage
 
             # Install with Gear Lever
-            flatpak run it.mijorus.gearlever --integrate ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-anylinux-aarch64.AppImage
+            flatpak run it.mijorus.gearlever --integrate ClassIn-${{ needs.check-version.outputs.raw_version_aa64 }}-aarch64.AppImage
 
             # Or run it manually
-            chmod +x ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-anylinux-aarch64.AppImage
-            ./ClassIn-${{ needs.check-and-build.outputs.raw_version_aa64 }}-anylinux-aarch64.AppImage
+            chmod +x ClassIn-${{ needs.check-version.outputs.raw_version_aa64 }}-aarch64.AppImage
+            ./ClassIn-${{ needs.check-version.outputs.raw_version_aa64 }}-aarch64.AppImage
             ```
             
             *Note for AM/AppMan users: The intrucsions to install ClassIn is included in [the README](https://github.com/imngkhang/classin-appimage-wrapper/#install-the-appimage). You don't need to run the above commands.*
@@ -171,6 +187,6 @@ jobs:
             ## Issues & Support
             Please report issues in the [GitHub Issues](https://github.com/imngkhang/classin-appimage-wrapper/issues).
           files: |
-            dist/ClassIn*anylinux*.AppImage*
+            dist/ClassIn*.AppImage*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
