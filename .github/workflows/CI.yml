@@ -66,12 +66,12 @@ jobs:
             runs-on: ubuntu-latest
           - arch: aarch64
             runs-on: ubuntu-24.04-arm
-    container: ghcr.io/pkgforge-dev/archlinux:latest
     steps:
       - uses: actions/checkout@v4
-      # Preparing the container for anylinux build
-      - name: Preparing Container
-        uses: pkgforge-dev/anylinux-setup-action@0964f2258d6c93d1391359978dde081fd8b3c6af 
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0 
+          token: ${{ secrets.GITHUB_TOKEN }}
       # Here we will build the AppImage
       - name: Build
         run: |
