@@ -1,0 +1,17 @@
+{
+  "name": "ClassIn",
+  "architectures": {
+    "x86_64": {
+      "version": "6.0.9.1757",
+      "url": "https://www.eeo.cn/download/client/classin_6.0.9.1757_amd64.deb",
+      "sha256": "4331e636372929ec5d2cdc45da76a328a0cf82b37079d0acfe6c4a43e9d0ef28",
+      "size": 691996184
+    },
+    "aarch64": {
+      "version": "6.0.9.1758",
+      "url": "https://www.eeo.cn/download/client/classin_6.0.9.1758_arm64.deb",
+      "sha256": "1ed8af2bd1d66847653e5a39c6a1f32a5347d01a7a439fd444a476187b833f8a",
+      "size": 663746652
+    }
+  }
+}
