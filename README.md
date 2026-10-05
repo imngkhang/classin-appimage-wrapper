@@ -15,7 +15,8 @@ This is an unofficial AppImage wrapper for ClassIn, using [quick-sharun](https:/
 Since ClassIn only officially provides `.deb` packages (which cannot be installed directly on Red Hat, SUSE, Arch, Gentoo-based, or immutable Linux distributions), this wrapper packages and extracts the official `.deb` binaries when user builds the AppImage.
 
 ## ⚠️  Known Issues
-  - **Screen sharing does not work on Wayland:** This is an upstream issue from ClassIn (EEO). The client lacks QtWayland and xdg-desktop-portal implementation, resulting in a black screen when attempting to share. A temporary workaround is running your session on X11, or use WMs or DEs that support it if your current DE removed X11 support (I will recommend WMs, for example, Openbox or i3).
+  - **Screen sharing on Wayland requires a bridge:** ClassIn (EEO) lacks QtWayland and xdg-desktop-portal support, so its screen capture reads a black XWayland root. This wrapper ships a bridge that fixes it: when `ScreenShareCapture` starts, the shim `screenproxy.so` (LD_PRELOAD) redirects ClassIn's screen capture to a headless Xvfb display (`:99`), which renders the real screen via the XDG ScreenCast portal → PipeWire → GStreamer. Recording stays native and does not activate the bridge. The compositor's permission dialog pops as usual. On X11 nothing changes (the bridge never activates).
+  - **Host packages required for the bridge (Wayland only):** `xvfb`, `xdotool`, `xrandr`, `python3` with `python3-dbus` + `python3-gi`, `gstreamer1.0-plugins-base` + `gstreamer1.0-plugins-bad` (pipewiresrc/ximagesink). If any is missing, the bridge silently stays off (log: `~/.config/ClassIn/bridge.log`). Disable it entirely with `CLASSIN_BRIDGE_DISABLE=1`.
   
 If you encounter any other issues, please report them on [GitHub Issues](https://github.com/imngkhang/classin-appimage-wrapper/issues).
 
@@ -61,17 +62,17 @@ If you are using [AM or AppMan](https://github.com/ivan-hc/AM), you can install 
 
 - **Debian / Ubuntu:**
   ```bash
-  sudo apt update && sudo apt install build-essential jq wget tar coreutils zsync
+  sudo apt update && sudo apt install build-essential libx11-dev libxcb1-dev libxcb-shm0-dev jq wget tar coreutils zsync
   ```
 
 - **Fedora / Red Hat:**
   ```bash
-  sudo dnf install @development-tools jq wget tar coreutils zsync
+  sudo dnf install @development-tools libX11-devel libxcb-devel xcb-util-wm-devel jq wget tar coreutils zsync
   ```
 
 - **Arch Linux / Manjaro:**
   ```bash
-  sudo pacman -Syu --needed base-devel jq wget tar coreutils zsync
+  sudo pacman -Syu --needed base-devel libx11 libxcb jq wget tar coreutils zsync
   ```
 
 - **openSUSE (Leap / Tumbleweed):**
@@ -125,4 +126,3 @@ Contributions are always welcome! You can help by:
 Want to become a **co-maintainer**? If you use ClassIn on Linux regularly, you can join in and help maintain this package! See [this issue](https://github.com/imngkhang/classin-appimage-wrapper/issues/1) for more info.
 
 Feel free to open an issue or submit a PR anytime!
-
