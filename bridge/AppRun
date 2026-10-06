@@ -1,0 +1,24 @@
+#!/bin/sh
+if [ -z "$APPDIR" ]; then
+    APPDIR=$(CDPATH= cd "$(dirname "$0")" && pwd)
+fi
+if [ "$XDG_SESSION_TYPE" = "wayland" ] && [ -z "$CLASSIN_BRIDGE_DISABLE" ] && [ -f "$APPDIR/bridge/screenproxy.so" ]; then
+    ok=1
+    for cmd in Xvfb python3 xdotool xrandr gst-launch-1.0; do
+        command -v "$cmd" >/dev/null 2>&1 || ok=0
+    done
+    if [ "$ok" = 1 ]; then
+        CFG="${XDG_CONFIG_HOME:-$HOME/.config}/ClassIn"
+        mkdir -p "$CFG" 2>/dev/null
+        export CLASSIN_PROXY_SRC=":99"
+        export CLASSIN_PROXY_REQUEST="$CFG/bridge-request"
+        export CLASSIN_PROXY_REGION="$CFG/bridge-region"
+        export CLASSIN_PROXY_HEARTBEAT="$CFG/bridge-heartbeat"
+        export CLASSIN_PROXY_STOP="$CFG/bridge-stop"
+        export CLASSIN_PROXY_LOG="$CFG/bridge-proxy.log"
+        export CLASSIN_BRIDGE_TOKEN="ci$$"
+        export LD_PRELOAD="$APPDIR/bridge/screenproxy.so${LD_PRELOAD:+:$LD_PRELOAD}"
+        python3 "$APPDIR/bridge/classin-bridge.py" >"$CFG/bridge.log" 2>&1 &
+    fi
+fi
+exec "$APPDIR/ClassIn" "$@"

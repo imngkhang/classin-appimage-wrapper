@@ -37,7 +37,7 @@ if [[ ! -f "$MANIFEST" ]]; then
   exit 1
 fi
 
-for cmd in jq wget ar tar sha256sum stat; do
+for cmd in jq wget ar tar sha256sum stat cc; do
   if ! command -v "$cmd" >/dev/null 2>&1; then
     echo "Error: Required command '$cmd' is not installed." >&2
     exit 1
@@ -128,6 +128,14 @@ else
   echo "Error: Desktop file not found in current directory." >&2
   exit 1
 fi
+
+echo "Building screen-share bridge..."
+mkdir -p "$APPDIR/bridge"
+cc -shared -fPIC -O2 -o "$APPDIR/bridge/screenproxy.so" bridge/screenproxy.c -ldl -lX11 -lxcb -lxcb-shm
+cp bridge/screenbridge.py bridge/classin-bridge.py "$APPDIR/bridge/"
+rm -f "$APPDIR/AppRun"
+cp bridge/AppRun "$APPDIR/AppRun"
+chmod +x "$APPDIR/AppRun"
 
 export VERSION="$VER"
 export APPDIR="$APPDIR"
