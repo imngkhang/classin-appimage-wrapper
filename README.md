@@ -15,8 +15,7 @@ This is an unofficial AppImage wrapper for ClassIn, using [quick-sharun](https:/
 Since ClassIn only officially provides `.deb` packages (which cannot be installed directly on Red Hat, SUSE, Arch, Gentoo-based, or immutable Linux distributions), this wrapper packages and extracts the official `.deb` binaries when user builds the AppImage.
 
 ## ⚠️  Known Issues
-  - **Screen sharing on Wayland requires a bridge:** ClassIn (EEO) lacks QtWayland and xdg-desktop-portal support, so its screen capture reads a black XWayland root. This wrapper ships a bridge that fixes it: when `ScreenShareCapture` starts, the shim `screenproxy.so` (LD_PRELOAD) redirects ClassIn's screen capture to a headless Xvfb display (`:99`), which renders the real screen via the XDG ScreenCast portal → PipeWire → GStreamer. Recording stays native and does not activate the bridge. The compositor's permission dialog pops as usual. On X11 nothing changes (the bridge never activates).
-  - **Host packages required for the bridge (Wayland only):** `xvfb`, `xdotool`, `xrandr`, `python3` with `python3-dbus` + `python3-gi`, `gstreamer1.0-plugins-base` + `gstreamer1.0-plugins-bad` (pipewiresrc/ximagesink). If any is missing, the bridge silently stays off (log: `~/.config/ClassIn/bridge.log`). Disable it entirely with `CLASSIN_BRIDGE_DISABLE=1`.
+  - **✅ Fixed: Screen sharing does not work on Wayland:** Thanks to [@collyn](https://github.com/collyn) to setting up a Wayland screen-sharing bridge. The app now can share the screen on Wayland seamlessly. See [PR #3](https://github.com/imngkhang/classin-appimage-wrapper/pull/3) and [Issue #2](https://github.com/imngkhang/classin-appimage-wrapper/issues/2) for more info.
   
 If you encounter any other issues, please report them on [GitHub Issues](https://github.com/imngkhang/classin-appimage-wrapper/issues).
 
@@ -38,7 +37,7 @@ Before installing or building this package, ensure your system meets the followi
 - **Display Server**: X11 (recommended) or Wayland (with limitations)
 - **glibc**: 2.38 or later, because it is *NOT an Anylinux AppImage*
 - **Architecture**: `x86_64` or `aarch64`
-- **Tools**: `jq`, `sha256sum`, `stat`, `wget`, `tar`, `ar`, `make`, `zsync`, from your distro
+- **Tools**: `jq`, `sha256sum`, `stat`, `wget`, `tar`, `ar`, `make`, `zsync`, `libx11-dev`, `libxcb1-dev`, `libxcb-shm0-dev`, `libxext-dev`, from your distro
 - **Gear Lever** (*optional*): Lastest version from [Flathub](https://flathub.org/en/apps/it.mijorus.gearlever)
 - **AM/AppMan** (*optional*): Lastest version from [iVAN's repo](https://github.com/ivan-hc/AM)
 
@@ -46,6 +45,7 @@ Before installing or building this package, ensure your system meets the followi
 I recommend using [Gear Lever](https://github.com/mijorus/gearlever) or [AM](https://github.com/ivan-hc/AM) to integrate the AppImage into your system menu.
 
 1.  Download the latest `.AppImage` file from the [**Releases**](https://github.com/imngkhang/classin-appimage-wrapper/releases) page.
+2.  Install these dependencies for Wayland screen sharing (*optional*): `xvfb`, `xdotool`, `xrandr`, `python3` with `python3-dbus` + `python3-gi`, `gstreamer1.0-plugins-base` + `gstreamer1.0-plugins-bad`, from your distro
 2.  Running ClassIn by going to the [Running ClassIn](#running-classin) section.
 
 If you are using [AM or AppMan](https://github.com/ivan-hc/AM), you can install using this command:
@@ -62,27 +62,27 @@ If you are using [AM or AppMan](https://github.com/ivan-hc/AM), you can install 
 
 - **Debian / Ubuntu:**
   ```bash
-  sudo apt update && sudo apt install build-essential libx11-dev libxcb1-dev libxcb-shm0-dev jq wget tar coreutils zsync
+  sudo apt update && sudo apt install build-essential libx11-dev libxcb1-dev libxcb-shm0-dev libxext-dev jq wget tar coreutils zsync
   ```
 
 - **Fedora / Red Hat:**
   ```bash
-  sudo dnf install @development-tools libX11-devel libxcb-devel xcb-util-wm-devel jq wget tar coreutils zsync
+  sudo dnf install @development-tools libX11-devel libxcb-devel xcb-util-wm-devel libXext-devel jq wget tar coreutils zsync
   ```
 
 - **Arch Linux / Manjaro:**
   ```bash
-  sudo pacman -Syu --needed base-devel libx11 libxcb jq wget tar coreutils zsync
+  sudo pacman -Syu --needed base-devel libx11 libxcb jq wget tar coreutils zsync libxext
   ```
 
 - **openSUSE (Leap / Tumbleweed):**
   ```bash
-  sudo zypper in -t pattern devel_basis && sudo zypper in jq wget tar coreutils zsync
+  sudo zypper in -t pattern devel_basis && sudo zypper in jq wget tar coreutils zsync libX11-devel libxcb-devel libXext-devel
   ```
 
 - **Gentoo:**
   ```bash
-  sudo emerge --ask sys-devel/make sys-devel/binutils app-misc/jq net-misc/wget app-arch/tar sys-apps/coreutils net-misc/zsync
+  sudo emerge --ask sys-devel/make sys-devel/binutils app-misc/jq net-misc/wget app-arch/tar sys-apps/coreutils net-misc/zsync x11-libs/libX11 x11-libs/libxcb x11-libs/libXext
   ```
 
 - **Locally build an AppImage:**

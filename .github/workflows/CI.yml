@@ -7,6 +7,22 @@ on:
   # Run workflow every day at midnight and on manual trigger
   schedule:
     - cron: "0 0 * * *"  
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - '**.md'
+      - '**/.gitignore'
+      - '**/LICENSE'
+      - '**/LICENSE.*'
+  pull_request:
+    branches:
+      - master
+    paths-ignore:
+      - '**.md'
+      - '**/.gitignore'
+      - '**/LICENSE'
+      - '**/LICENSE.*'
   workflow_dispatch: 
 
 jobs:
@@ -55,7 +71,7 @@ jobs:
           fi
   build:
     needs: [check-version]
-    if: needs.check-version.outputs.should_release == 'true' || github.event_name == 'workflow_dispatch'
+    if: needs.check-version.outputs.should_release == 'true' || github.event_name == 'workflow_dispatch' || github.event_name == 'push' || github.event_name == 'pull_request'
     name: "Build AppImage (${{ matrix.arch }})"
     runs-on: ${{ matrix.runs-on }}
     strategy:
@@ -90,7 +106,7 @@ jobs:
 
   release:
     needs: [check-version, build]
-    if: needs.check-version.outputs.should_release == 'true'  || github.event_name == 'workflow_dispatch'
+    if: needs.check-version.outputs.should_release == 'true'  || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
     permissions: write-all
     runs-on: ubuntu-latest
 
@@ -153,12 +169,6 @@ jobs:
             dist/ClassIn*.AppImage*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Delete old continuous release
-        run: |
-          gh release delete continuous --yes --cleanup-tag || true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # Create a continuous release and upload the AppImage
       - name: Update continuous release
         uses: softprops/action-gh-release@v2
@@ -206,3 +216,26 @@ jobs:
             dist/ClassIn*.AppImage*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Cleanup old release assets for continuous release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_TAG: continuous
+          CURRENT_VER: ${{ needs.check-version.outputs.app_version }}
+        run: |
+          set -euo pipefail
+
+          echo "Cleaning up assets for release $RELEASE_TAG (keeping version $CURRENT_VER)"
+
+          asset_names=$(gh release view "$RELEASE_TAG" --json assets --jq '.assets[].name' || true)
+
+          if [ -z "$asset_names" ]; then
+            echo "No assets found for release $RELEASE_TAG"
+            exit 0
+          fi
+
+          for name in $asset_names; do
+            if [[ "$name" == ClassIn-*.AppImage* ]] && [[ "$name" != *"$CURRENT_VER"* ]]; then
+              echo "Removing old asset: $name"
+              gh release delete-asset "$RELEASE_TAG" "$name" --yes
+            fi
+          done     
