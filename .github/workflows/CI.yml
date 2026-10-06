@@ -75,7 +75,7 @@ jobs:
       - name: Install build deps
         run: |
           sudo apt-get update
-          sudo apt-get install -y gcc libx11-dev libxcb1-dev libxcb-shm0-dev
+          sudo apt-get install -y gcc libx11-dev libxcb1-dev libxcb-shm0-dev libxext-dev
       # Here we will build the AppImage
       - name: Build
         run: |
