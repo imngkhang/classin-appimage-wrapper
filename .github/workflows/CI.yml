@@ -12,6 +12,7 @@ on:
       - master
     paths-ignore:
       - '**.md'
+      - '**/AUTHORS'
       - '**/.gitignore'
       - '**/LICENSE'
       - '**/LICENSE.*'
