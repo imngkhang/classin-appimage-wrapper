@@ -18,6 +18,12 @@ if [ "$XDG_SESSION_TYPE" = "wayland" ] && [ -z "$CLASSIN_BRIDGE_DISABLE" ] && [ 
         export CLASSIN_PROXY_LOG="$CFG/bridge-proxy.log"
         export CLASSIN_BRIDGE_TOKEN="ci$$"
         export LD_PRELOAD="$APPDIR/bridge/screenproxy.so${LD_PRELOAD:+:$LD_PRELOAD}"
+        if [ -f "$CFG/bridge-proxy.log" ]; then
+            mv "$CFG/bridge-proxy.log" "$CFG/bridge-proxy-1.log"
+        fi
+        if [ -f "$CFG/bridge.log" ]; then
+            mv "$CFG/bridge.log" "$CFG/bridge-1.log"
+        fi
         python3 "$APPDIR/bridge/classin-bridge.py" >"$CFG/bridge.log" 2>&1 &
     fi
 fi
