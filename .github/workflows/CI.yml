@@ -232,18 +232,17 @@ jobs:
       - name: Cleanup old release assets for continuous release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RELEASE_TAG: ${{ needs.check-version.outputs.app_version }}
+          FIXED_TAG: ${{ needs.check-version.outputs.app_version }}
           CONTINUOUS_TAG: continuous
           CURRENT_VER_X64: ${{ needs.check-version.outputs.raw_version_x64 }}
           CURRENT_VER_AA64: ${{ needs.check-version.outputs.raw_version_aa64 }}
         run: |
           set -euo pipefail
 
-          echo "Cleaning up assets for release $RELEASE_TAG"
-          echo "Keeping x64 version: $CURRENT_VER_X64"
-          echo "Keeping aa64 version: $CURRENT_VER_AA64"
-
           for RELEASE_TAG in "$CONTINUOUS_TAG" "$FIXED_TAG"; do
+            echo "Cleaning up assets for release $RELEASE_TAG"
+            echo "Keeping x64 version: $CURRENT_VER_X64"
+            echo "Keeping aa64 version: $CURRENT_VER_AA64"
 
             asset_names=$(gh release view "$RELEASE_TAG" --json assets --jq '.assets[].name' 2>/dev/null || echo "")
 

@@ -33,9 +33,9 @@ Here is the screenshots of the app:
 
 Before installing or building this package, ensure your system meets the following requirements:
 
-- **Linux**: ANY versions, because this is a *quick-sharun based AppImage*
+- **Linux**: 2.6.17 or later (because the hard dependency on openat of sharun, which doesn't have on kernels < 2.6.17)
 - **Display Server**: X11 (recommended) or Wayland (with limitations)
-- **glibc**: 2.38 or later, because it is *NOT an Anylinux AppImage*
+- **glibc**: 2.28 or later, because it is *NOT an Anylinux AppImage*
 - **Architecture**: `x86_64` or `aarch64`
 - **Tools**: `jq`, `sha256sum`, `stat`, `wget`, `tar`, `ar`, `make`, `zsync`, `libx11-dev`, `libxcb1-dev`, `libxcb-shm0-dev`, `libxext-dev`, from your distro
 - **Gear Lever** (*optional*): Lastest version from [Flathub](https://flathub.org/en/apps/it.mijorus.gearlever)
