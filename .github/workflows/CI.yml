@@ -74,7 +74,7 @@ jobs:
             git config user.email "github-actions[bot]@users.noreply.github.com"
             if [ -n "$(git status --porcelain)" ]; then
               git add manifest.json
-              git commit -m "bot: Auto-update manifest to $APP_VER"
+              git commit -m "bot: Auto-update manifest (x64: $RAW_VER_x64, aa64: $RAW_VER_aa64)"
               git push
             fi
           else
